@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comercios Matadepera</title>
+    <title>matacomerç</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
     <style>
         * {
@@ -13,304 +13,431 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            animation: slideDown 0.6s ease-out;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-        }
-
-        header h1 {
-            font-size: 2.8em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-            font-weight: 700;
-        }
-
-        header p {
-            font-size: 1.15em;
-            opacity: 0.95;
-            font-weight: 300;
-        }
-
-        .busqueda {
-            margin-bottom: 25px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            animation: slideUp 0.6s ease-out;
-            padding: 0 10px;
-        }
-
-        .busqueda input,
-        .busqueda select {
-            padding: 14px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            font-weight: 500;
-            background: white;
-            color: #1B5E20;
-        }
-
-        .busqueda input::placeholder {
-            color: #81C784;
-        }
-
-        .busqueda input:focus,
-        .busqueda select:focus {
-            outline: none;
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-            transform: translateY(-3px);
-            border: 2px solid #4CAF50;
-        }
-
-        .busqueda input {
-            flex: 1;
-            min-width: 220px;
-        }
-
-        .busqueda select {
-            min-width: 180px;
-            cursor: pointer;
-        }
-
-        .contenido {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .mapa-container {
-            background: white;
-            border-radius: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f8f8;
             overflow: hidden;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-            min-height: 550px;
-            border: 4px solid #4CAF50;
         }
 
-        #mapa {
-            width: 100%;
-            height: 100%;
-            min-height: 550px;
-        }
-
-        .listado-container {
+        .app-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             background: white;
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-            overflow-y: auto;
-            max-height: 550px;
-            border: 4px solid #4CAF50;
         }
 
-        .listado-container h2 {
-            color: #1B5E20;
-            margin-bottom: 18px;
-            font-size: 1.6em;
-            font-weight: 700;
-        }
-
-        .comercio-item {
+        /* HEADER */
+        .header {
+            background: white;
             padding: 16px;
-            margin-bottom: 14px;
-            border-left: 4px solid #4CAF50;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #F1F8F6;
-        }
-
-        .comercio-item:hover {
-            background: #E8F5E9;
-            border-left-color: #1B5E20;
-            transform: translateX(6px);
-            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.25);
-        }
-
-        .comercio-item h3 {
-            color: #1B5E20;
-            margin-bottom: 8px;
-            font-size: 1.15em;
-            font-weight: 700;
-        }
-
-        .comercio-tipo {
-            display: inline-block;
-            background: linear-gradient(135deg, #4CAF50, #43A047);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            margin-bottom: 10px;
-            font-weight: 600;
-            box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
-        }
-
-        .comercio-info {
-            color: #558B2F;
-            font-size: 0.95em;
-            line-height: 1.7;
-        }
-
-        .comercio-info p {
-            margin-bottom: 6px;
-        }
-
-        .comercio-info strong {
-            color: #1B5E20;
-            font-weight: 700;
-        }
-
-        .comercio-info i {
-            margin-right: 6px;
-            color: #4CAF50;
-            font-weight: bold;
-        }
-
-        @media (max-width: 1024px) {
-            .contenido {
-                grid-template-columns: 1fr;
-            }
-
-            header h1 {
-                font-size: 2.2em;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .contenido {
-                grid-template-columns: 1fr;
-            }
-
-            header h1 {
-                font-size: 1.8em;
-            }
-
-            .busqueda {
-                flex-direction: column;
-            }
-
-            .busqueda input,
-            .busqueda select {
-                width: 100%;
-            }
-
-            #mapa {
-                min-height: 350px;
-            }
-
-            .mapa-container {
-                min-height: 350px;
-            }
-
-            .listado-container {
-                max-height: 400px;
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .sin-resultados {
-            text-align: center;
-            color: #81C784;
-            padding: 40px 20px;
-            font-size: 1.05em;
-        }
-
-        .contador {
-            background: #E8F5E9;
-            color: #1B5E20;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
-            margin-left: auto;
-        }
-
-        .header-top {
+            border-bottom: 1px solid #e0e0e0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            z-index: 100;
         }
 
-        .header-top h2 {
-            margin: 0;
-            font-size: 1.6em;
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1B5E20;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            color: #999;
+            margin-top: -4px;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .view {
+            display: none;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* MAPA */
+        #mapa {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* LISTA */
+        .lista-content {
+            padding: 16px 12px;
+        }
+
+        .search-box {
+            margin-bottom: 16px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 24px;
+            font-size: 16px;
+            background: #f5f5f5;
+        }
+
+        .search-box input::placeholder {
+            color: #999;
+        }
+
+        .filtros {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+        }
+
+        .filtro-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filtro-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .comercio-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .comercio-card:active {
+            background: #f9f9f9;
+            transform: scale(0.98);
+        }
+
+        .comercio-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #E8F5E9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .comercio-info {
+            flex: 1;
+        }
+
+        .comercio-nombre {
+            font-weight: 600;
+            font-size: 16px;
+            color: #000;
+        }
+
+        .comercio-tipo {
+            font-size: 12px;
+            color: #4CAF50;
+            font-weight: 500;
+        }
+
+        .comercio-horario {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .fav-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ddd;
+        }
+
+        .fav-btn.favorited {
+            color: #4CAF50;
+        }
+
+        /* DETALLE */
+        .detalle-content {
+            padding: 16px;
+        }
+
+        .detalle-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 12px;
+        }
+
+        .detalle-back {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .detalle-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: #E8F5E9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .detalle-nombre {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .detalle-tipo {
+            font-size: 14px;
+            color: #4CAF50;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .detalle-section {
+            margin-bottom: 24px;
+        }
+
+        .detalle-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1B5E20;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detalle-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .detalle-item-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .detalle-item-text {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .btn-navegar {
+            width: 100%;
+            padding: 14px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+        }
+
+        .btn-navegar:active {
+            background: #45a049;
+        }
+
+        /* FAVORITOS */
+        .favoritos-content {
+            padding: 16px;
+        }
+
+        .favoritos-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .favoritos-empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* MAS */
+        .mas-content {
+            padding: 16px;
+        }
+
+        .mas-item {
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* NAVEGACIÓN INFERIOR */
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+            padding-bottom: max(0px, env(safe-area-inset-bottom));
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #999;
+            transition: all 0.2s;
+        }
+
+        .nav-btn.active {
+            color: #4CAF50;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .detalle-nombre {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🌿 Comercios Matadepera</h1>
-            <p>Descubre todos los negocios locales del pueblo</p>
-        </header>
-
-        <div class="busqueda">
-            <input type="text" id="buscarNombre" placeholder="Buscar comercio...">
-            <select id="filtroTipo">
-                <option value="">Ver todos</option>
-                <option value="Supermercado">Supermercados</option>
-                <option value="Farmacia">Farmacias</option>
-                <option value="Carnicería">Carnicería</option>
-                <option value="Pescadería">Pescadería</option>
-                <option value="Bar-Restaurante">Bar-Restaurante</option>
-                <option value="Otros">Otros</option>
-            </select>
+    <div class="app-container">
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <div class="header h1" style="margin: 0;">matacomerç</div>
+                <div class="header-subtitle">Matadepera</div>
+            </div>
         </div>
 
-        <div class="contenido">
-            <div class="mapa-container">
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="content">
+            <!-- VISTA MAPA -->
+            <div id="vistaMap" class="view active">
                 <div id="mapa"></div>
             </div>
-            <div class="listado-container">
-                <div class="header-top">
-                    <h2>Comercios</h2>
-                    <span class="contador" id="contador">0</span>
+
+            <!-- VISTA LISTA -->
+            <div id="vistaLista" class="view">
+                <div class="lista-content">
+                    <div class="search-box">
+                        <input type="text" id="buscar" placeholder="Buscar comercio...">
+                    </div>
+                    <div class="filtros">
+                        <button class="filtro-btn active" data-filtro="">Tots</button>
+                        <button class="filtro-btn" data-filtro="Supermercado">Supermercat</button>
+                        <button class="filtro-btn" data-filtro="Farmacia">Farmàcia</button>
+                        <button class="filtro-btn" data-filtro="Carnicería">Carniceria</button>
+                        <button class="filtro-btn" data-filtro="Pescadería">Peixateria</button>
+                    </div>
+                    <div id="listado"></div>
                 </div>
-                <div id="listado"></div>
             </div>
+
+            <!-- VISTA DETALLE -->
+            <div id="vistaDetalle" class="view">
+                <div class="detalle-content">
+                    <div class="detalle-header">
+                        <button class="detalle-back" onclick="mostrarVista('lista')">←</button>
+                        <div></div>
+                    </div>
+                    <div id="detalleContenido"></div>
+                </div>
+            </div>
+
+            <!-- VISTA FAVORITOS -->
+            <div id="vistaFavoritos" class="view">
+                <div class="favoritos-content">
+                    <div id="favoritosList"></div>
+                </div>
+            </div>
+
+            <!-- VISTA MAS -->
+            <div id="vistaMas" class="view">
+                <div class="mas-content">
+                    <div class="mas-item">📱 Próximamente: més funcions</div>
+                    <div class="mas-item">📸 Fotos de comercios</div>
+                    <div class="mas-item">⭐ Reseñas y valoraciones</div>
+                    <div class="mas-item">🎉 Ofertas especiales</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVEGACIÓN INFERIOR -->
+        <div class="navbar">
+            <button class="nav-btn active" data-view="map">
+                <span class="nav-icon">🗺️</span>
+                <span>Mapa</span>
+            </button>
+            <button class="nav-btn" data-view="lista">
+                <span class="nav-icon">📋</span>
+                <span>Llista</span>
+            </button>
+            <button class="nav-btn" data-view="favoritos">
+                <span class="nav-icon">❤️</span>
+                <span>Favorits</span>
+            </button>
+            <button class="nav-btn" data-view="mas">
+                <span class="nav-icon">⋯</span>
+                <span>Més</span>
+            </button>
         </div>
     </div>
 
@@ -323,8 +450,9 @@
                 tipo: "Supermercado",
                 telefono: "937 870 032",
                 horario: "9:00 - 20:30",
-                latitud: 41.6395,
-                longitud: 1.8798
+                latitud: 41.6036,
+                longitud: 2.0244,
+                icono: "🛒"
             },
             {
                 id: 2,
@@ -332,8 +460,9 @@
                 tipo: "Supermercado",
                 telefono: "931 866 542",
                 horario: "8:30 - 14:00 / 14:00 - 20:30",
-                latitud: 41.6408,
-                longitud: 1.8812
+                latitud: 41.6038,
+                longitud: 2.0246,
+                icono: "🛒"
             },
             {
                 id: 3,
@@ -341,8 +470,9 @@
                 tipo: "Supermercado",
                 telefono: "666 336 521",
                 horario: "7:00 - 0:00",
-                latitud: 41.6410,
-                longitud: 1.8815
+                latitud: 41.6040,
+                longitud: 2.0248,
+                icono: "🛒"
             },
             {
                 id: 4,
@@ -350,8 +480,9 @@
                 tipo: "Supermercado",
                 telefono: "937 099 793",
                 horario: "9:00 - 21:30",
-                latitud: 41.6385,
-                longitud: 1.8790
+                latitud: 41.6034,
+                longitud: 2.0242,
+                icono: "🛒"
             },
             {
                 id: 5,
@@ -359,8 +490,9 @@
                 tipo: "Farmacia",
                 telefono: "937 301 720",
                 horario: "9:00 - 13:30 / 16:30 - 20:00",
-                latitud: 41.6397,
-                longitud: 1.8805
+                latitud: 41.6037,
+                longitud: 2.0245,
+                icono: "💊"
             },
             {
                 id: 6,
@@ -368,8 +500,9 @@
                 tipo: "Farmacia",
                 telefono: "937 870 001",
                 horario: "9:00 - 13:30 / 16:30 - 20:00",
-                latitud: 41.6402,
-                longitud: 1.8810
+                latitud: 41.6039,
+                longitud: 2.0247,
+                icono: "💊"
             },
             {
                 id: 7,
@@ -377,8 +510,9 @@
                 tipo: "Carnicería",
                 telefono: "608 917 826",
                 horario: "8:30 - 14:00 / 17:00 - 20:00",
-                latitud: 41.6392,
-                longitud: 1.8795
+                latitud: 41.6035,
+                longitud: 2.0243,
+                icono: "🥩"
             },
             {
                 id: 8,
@@ -386,8 +520,9 @@
                 tipo: "Bar-Restaurante",
                 telefono: "936 043 190",
                 horario: "11:30 - 24:00",
-                latitud: 41.6400,
-                longitud: 1.8808
+                latitud: 41.6036,
+                longitud: 2.0244,
+                icono: "🍽️"
             },
             {
                 id: 9,
@@ -395,8 +530,9 @@
                 tipo: "Pescadería",
                 telefono: "937 871 842",
                 horario: "8:30 - 15:00 / 17:00 - 20:00",
-                latitud: 41.6405,
-                longitud: 1.8813
+                latitud: 41.6041,
+                longitud: 2.0249,
+                icono: "🐟"
             },
             {
                 id: 10,
@@ -404,8 +540,9 @@
                 tipo: "Bar-Restaurante",
                 telefono: "937 870 105",
                 horario: "8:00 - 14:00 / 17:00 - 20:00",
-                latitud: 41.6407,
-                longitud: 1.8814
+                latitud: 41.6040,
+                longitud: 2.0248,
+                icono: "🍽️"
             },
             {
                 id: 11,
@@ -413,97 +550,232 @@
                 tipo: "Otros",
                 telefono: "(consultar)",
                 horario: "10:00 - 13:30 / 16:30 - 20:00",
-                latitud: 41.6401,
-                longitud: 1.8809
+                latitud: 41.6037,
+                longitud: 2.0245,
+                icono: "🏪"
             }
         ];
 
-        const mapa = L.map('mapa').setView([41.6400, 1.8808], 16);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap',
-            maxZoom: 19
-        }).addTo(mapa);
+        let favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+        let filtroActual = '';
+        let mapaInstance;
 
-        let marcadores = {};
+        // INICIALIZAR MAPA
+        function initMapa() {
+            mapaInstance = L.map('mapa').setView([41.6036, 2.0244], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap',
+                maxZoom: 19
+            }).addTo(mapaInstance);
 
-        function cargarComerciosEnMapa(comerciosFiltrados) {
-            Object.values(marcadores).forEach(m => mapa.removeLayer(m));
-            marcadores = {};
-
-            comerciosFiltrados.forEach(comercio => {
-                const icono = L.icon({
-                    iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNiIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI2IDQwIj48cGF0aCBkPSJNMTMgMEMzIDAgMCAxMCAwIDIwYzAgMjAgMTMgMjAgMTMgMjBzMTMgMCAxMyAtMjBjMCAtMTAgLTMgLTIwIC0xMyAtMjB6TTEzIDI2Yy01IDAgLTkgLTQgLTkgLTljMCAtNSA0IC05IDkgLTljNSAwIDkgNCA5IDljMCA1IC00IDkgLTkgOXoiIGZpbGw9IiMxQjVFMjAiLz48L3N2Zz4=',
-                    iconSize: [26, 40],
-                    iconAnchor: [13, 40],
-                    popupAnchor: [0, -40]
+            comercios.forEach(comercio => {
+                const marcador = L.circleMarker([comercio.latitud, comercio.longitud], {
+                    radius: 8,
+                    fillColor: '#4CAF50',
+                    color: '#1B5E20',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).bindPopup(`
+                    <div style="font-size: 14px;">
+                        <strong>${comercio.nombre}</strong><br>
+                        ${comercio.icono} ${comercio.tipo}<br>
+                        📞 ${comercio.telefono}<br>
+                        🕐 ${comercio.horario}
+                    </div>
+                `).on('click', function() {
+                    mostrarDetalle(comercio.id);
                 });
-
-                const marcador = L.marker([comercio.latitud, comercio.longitud], { icon: icono })
-                    .bindPopup(`<div style="font-family: Arial; width: 180px;">
-                        <strong style="color: #1B5E20; font-size: 14px;">${comercio.nombre}</strong><br/>
-                        <span style="color: #4CAF50; font-size: 12px; font-weight: bold;">${comercio.tipo}</span><br/>
-                        <span style="color: #666; font-size: 12px;">☎️ ${comercio.telefono}</span><br/>
-                        <span style="color: #666; font-size: 12px;">🕐 ${comercio.horario}</span>
-                    </div>`)
-                    .addTo(mapa);
-                marcadores[comercio.id] = marcador;
+                marcador.addTo(mapaInstance);
             });
+        }
 
-            if (comerciosFiltrados.length > 0) {
-                const grupo = L.featureGroup(Object.values(marcadores));
-                mapa.fitBounds(grupo.getBounds().pad(0.1));
+        // MOSTRAR VISTAS
+        function mostrarVista(vista) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            if (vista === 'map') {
+                document.getElementById('vistaMap').classList.add('active');
+                document.querySelector('[data-view="map"]').classList.add('active');
+                if (!mapaInstance) initMapa();
+                setTimeout(() => mapaInstance.invalidateSize(), 100);
+            } else if (vista === 'lista') {
+                document.getElementById('vistaLista').classList.add('active');
+                document.querySelector('[data-view="lista"]').classList.add('active');
+                renderLista();
+            } else if (vista === 'favoritos') {
+                document.getElementById('vistaFavoritos').classList.add('active');
+                document.querySelector('[data-view="favoritos"]').classList.add('active');
+                renderFavoritos();
+            } else if (vista === 'mas') {
+                document.getElementById('vistaMas').classList.add('active');
+                document.querySelector('[data-view="mas"]').classList.add('active');
             }
         }
 
-        function mostrarListado(comerciosFiltrados) {
-            const listado = document.getElementById('listado');
-            const contador = document.getElementById('contador');
-            
-            contador.textContent = comerciosFiltrados.length;
+        // RENDER LISTA
+        function renderLista() {
+            const filtrados = filtroActual 
+                ? comercios.filter(c => c.tipo === filtroActual)
+                : comercios;
 
-            if (comerciosFiltrados.length === 0) {
-                listado.innerHTML = '<div class="sin-resultados">No se encontraron comercios</div>';
+            const html = filtrados.map(c => `
+                <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
+                    <div class="comercio-icon">${c.icono}</div>
+                    <div class="comercio-info">
+                        <div class="comercio-nombre">${c.nombre}</div>
+                        <div class="comercio-tipo">${c.tipo}</div>
+                        <div class="comercio-horario">🕐 ${c.horario}</div>
+                    </div>
+                    <button class="fav-btn ${favoritos.includes(c.id) ? 'favorited' : ''}" 
+                        onclick="event.stopPropagation(); toggleFavorito(${c.id})">
+                        ${favoritos.includes(c.id) ? '❤️' : '🤍'}
+                    </button>
+                </div>
+            `).join('');
+
+            document.getElementById('listado').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">No hay comercios</div>';
+        }
+
+        // RENDER FAVORITOS
+        function renderFavoritos() {
+            const favComercio = comercios.filter(c => favoritos.includes(c.id));
+            
+            if (favComercio.length === 0) {
+                document.getElementById('favoritosList').innerHTML = `
+                    <div class="favoritos-empty">
+                        <div class="favoritos-empty-icon">❤️</div>
+                        <div>No tens favorits</div>
+                    </div>
+                `;
                 return;
             }
 
-            listado.innerHTML = comerciosFiltrados.map(comercio => `
-                <div class="comercio-item" onclick="hacerZoom(${comercio.id})">
-                    <h3>${comercio.nombre}</h3>
-                    <span class="comercio-tipo">${comercio.tipo}</span>
+            const html = favComercio.map(c => `
+                <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
+                    <div class="comercio-icon">${c.icono}</div>
                     <div class="comercio-info">
-                        <p><i>📞</i><strong>Teléfono:</strong> ${comercio.telefono}</p>
-                        <p><i>🕐</i><strong>Horario:</strong> ${comercio.horario}</p>
+                        <div class="comercio-nombre">${c.nombre}</div>
+                        <div class="comercio-tipo">${c.tipo}</div>
+                        <div class="comercio-horario">🕐 ${c.horario}</div>
                     </div>
+                    <button class="fav-btn favorited" 
+                        onclick="event.stopPropagation(); toggleFavorito(${c.id})">
+                        ❤️
+                    </button>
                 </div>
             `).join('');
+
+            document.getElementById('favoritosList').innerHTML = html;
         }
 
-        function hacerZoom(id) {
+        // MOSTRAR DETALLE
+        function mostrarDetalle(id) {
             const comercio = comercios.find(c => c.id === id);
-            mapa.setView([comercio.latitud, comercio.longitud], 18);
-            if (marcadores[id]) {
-                marcadores[id].openPopup();
-            }
-        }
+            
+            const html = `
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div class="detalle-icon" style="margin: 0 auto; margin-bottom: 16px;">${comercio.icono}</div>
+                    <div class="detalle-nombre">${comercio.nombre}</div>
+                    <div class="detalle-tipo">${comercio.tipo}</div>
+                </div>
 
-        function filtrarComercio() {
-            const nombreBusca = document.getElementById('buscarNombre').value.toLowerCase();
-            const tipoBusca = document.getElementById('filtroTipo').value;
+                <div class="detalle-section">
+                    <div class="detalle-section-title">Contacte</div>
+                    <div class="detalle-item">
+                        <div class="detalle-item-icon">📞</div>
+                        <div class="detalle-item-text">${comercio.telefono}</div>
+                    </div>
+                </div>
 
-            const filtrados = comercios.filter(c => {
-                const coincideNombre = c.nombre.toLowerCase().includes(nombreBusca);
-                const coincideTipo = tipoBusca === '' || c.tipo === tipoBusca;
-                return coincideNombre && coincideTipo;
+                <div class="detalle-section">
+                    <div class="detalle-section-title">Horari</div>
+                    <div class="detalle-item">
+                        <div class="detalle-item-icon">🕐</div>
+                        <div class="detalle-item-text">${comercio.horario}</div>
+                    </div>
+                </div>
+
+                <button class="btn-navegar" onclick="abrirNavegador(${comercio.latitud}, ${comercio.longitud}, '${comercio.nombre}')">
+                    📍 Navegar a ${comercio.nombre}
+                </button>
+            `;
+
+            document.getElementById('detalleContenido').innerHTML = html;
+            document.getElementById('vistaDetalle').classList.add('active');
+            document.querySelectorAll('.view').forEach(v => {
+                if (v.id !== 'vistaDetalle') v.classList.remove('active');
             });
-
-            mostrarListado(filtrados);
-            cargarComerciosEnMapa(filtrados);
         }
 
-        document.getElementById('buscarNombre').addEventListener('input', filtrarComercio);
-        document.getElementById('filtroTipo').addEventListener('change', filtrarComercio);
+        // TOGGLE FAVORITO
+        function toggleFavorito(id) {
+            const index = favoritos.indexOf(id);
+            if (index > -1) {
+                favoritos.splice(index, 1);
+            } else {
+                favoritos.push(id);
+            }
+            localStorage.setItem('favoritos', JSON.stringify(favoritos));
+            renderLista();
+        }
 
-        filtrarComercio();
+        // NAVEGAR
+        function abrirNavegador(lat, lng, nombre) {
+            const url = `https://www.google.com/maps/search/${encodeURIComponent(nombre)}/@${lat},${lng},17z`;
+            window.open(url, '_blank');
+        }
+
+        // NAVEGACIÓN
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const view = btn.dataset.view;
+                if (view === 'map') mostrarVista('map');
+                else if (view === 'lista') mostrarVista('lista');
+                else if (view === 'favoritos') mostrarVista('favoritos');
+                else if (view === 'mas') mostrarVista('mas');
+            });
+        });
+
+        // FILTROS
+        document.querySelectorAll('.filtro-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filtroActual = btn.dataset.filtro;
+                renderLista();
+            });
+        });
+
+        // BUSCAR
+        document.getElementById('buscar').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const filtrados = comercios.filter(c => 
+                c.nombre.toLowerCase().includes(search) &&
+                (!filtroActual || c.tipo === filtroActual)
+            );
+
+            const html = filtrados.map(c => `
+                <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
+                    <div class="comercio-icon">${c.icono}</div>
+                    <div class="comercio-info">
+                        <div class="comercio-nombre">${c.nombre}</div>
+                        <div class="comercio-tipo">${c.tipo}</div>
+                        <div class="comercio-horario">🕐 ${c.horario}</div>
+                    </div>
+                    <button class="fav-btn ${favoritos.includes(c.id) ? 'favorited' : ''}" 
+                        onclick="event.stopPropagation(); toggleFavorito(${c.id})">
+                        ${favoritos.includes(c.id) ? '❤️' : '🤍'}
+                    </button>
+                </div>
+            `).join('');
+
+            document.getElementById('listado').innerHTML = html;
+        });
+
+        // INICIALIZAR
+        initMapa();
     </script>
 </body>
 </html>
