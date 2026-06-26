@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>matacomerç</title>
+    <title>Matacomerç</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
     <style>
         * {
@@ -31,7 +31,7 @@
             padding: 16px;
             border-bottom: 1px solid #e0e0e0;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             z-index: 100;
         }
@@ -40,12 +40,6 @@
             font-size: 24px;
             font-weight: 700;
             color: #1B5E20;
-        }
-
-        .header-subtitle {
-            font-size: 12px;
-            color: #999;
-            margin-top: -4px;
         }
 
         /* CONTENIDO PRINCIPAL */
@@ -68,12 +62,25 @@
         /* MAPA */
         #mapa {
             width: 100%;
-            height: 100%;
+            height: 250px;
+            border-radius: 12px;
+            margin-bottom: 16px;
         }
 
         /* LISTA */
         .lista-content {
             padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mapa-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            flex-shrink: 0;
         }
 
         .search-box {
@@ -301,9 +308,63 @@
             margin-bottom: 16px;
         }
 
+        /* OFERTAS */
+        .ofertas-content {
+            padding: 16px;
+        }
+
+        .ofertas-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .ofertas-empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
         /* MAS */
         .mas-content {
             padding: 16px;
+        }
+
+        .mas-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1B5E20;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mas-item-option {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .idioma-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .idioma-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .idioma-btn:hover:not(.active) {
+            border-color: #4CAF50;
         }
 
         .mas-item {
@@ -342,6 +403,7 @@
         }
 
         .nav-icon {
+            font-size: 24px;
             width: 24px;
             height: 24px;
             color: currentColor;
@@ -363,22 +425,17 @@
     <div class="app-container">
         <!-- HEADER -->
         <div class="header">
-            <div>
-                <div class="header h1" style="margin: 0;">matacomerç</div>
-                <div class="header-subtitle">Matadepera</div>
-            </div>
+            <div class="header h1" style="margin: 0;">Matacomerç</div>
         </div>
 
         <!-- CONTENIDO PRINCIPAL -->
         <div class="content">
-            <!-- VISTA MAPA -->
-            <div id="vistaMap" class="view active">
-                <div id="mapa"></div>
-            </div>
-
-            <!-- VISTA LISTA -->
-            <div id="vistaLista" class="view">
+            <!-- VISTA MAPA + LISTA (combinadas) -->
+            <div id="vistaLista" class="view active">
                 <div class="lista-content">
+                    <div class="mapa-container">
+                        <div id="mapa"></div>
+                    </div>
                     <div class="search-box">
                         <input type="text" id="buscar" placeholder="Buscar comercio...">
                     </div>
@@ -411,41 +468,53 @@
                 </div>
             </div>
 
+            <!-- VISTA OFERTAS -->
+            <div id="vistaOfertas" class="view">
+                <div class="ofertas-content">
+                    <div class="ofertas-empty">
+                        <div class="ofertas-empty-icon">🎉</div>
+                        <div>Pròximament: ofertes especials</div>
+                        <p style="font-size: 14px; color: #999; margin-top: 16px;">Els comercis locals podran publicar les seves millors ofertes aquí.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- VISTA MAS -->
             <div id="vistaMas" class="view">
                 <div class="mas-content">
-                    <div class="mas-item">📱 Próximamente: més funcions</div>
+                    <div class="mas-section-title">Idioma</div>
+                    <div class="mas-item-option">
+                        <button id="btnCatalan" class="idioma-btn active" onclick="cambiarIdioma('ca')">Català</button>
+                        <button id="btnCastell" class="idioma-btn" onclick="cambiarIdioma('es')">Castellano</button>
+                    </div>
+                    
+                    <div class="mas-section-title" style="margin-top: 32px;">Pròximament</div>
                     <div class="mas-item">📸 Fotos de comercios</div>
                     <div class="mas-item">⭐ Reseñas y valoraciones</div>
-                    <div class="mas-item">🎉 Ofertas especiales</div>
+                    <div class="mas-item">📱 Notificaciones</div>
                 </div>
             </div>
         </div>
 
         <!-- NAVEGACIÓN INFERIOR -->
         <div class="navbar">
-            <button class="nav-btn active" data-view="map">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 14 8 14s8-8.75 8-14c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+            <button class="nav-btn active" data-view="lista">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 9h18v2H3V9zm0 5h18v2H3v-2zM3 4h18v2H3V4zm0 11h18v2H3v-2z"/>
                 </svg>
-                <span>Mapa</span>
-            </button>
-            <button class="nav-btn" data-view="lista">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="8" y1="6" x2="21" y2="6"></line>
-                    <line x1="8" y1="12" x2="21" y2="12"></line>
-                    <line x1="8" y1="18" x2="21" y2="18"></line>
-                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                </svg>
-                <span>Llista</span>
+                <span>Inici</span>
             </button>
             <button class="nav-btn" data-view="favoritos">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
                 <span>Favorits</span>
+            </button>
+            <button class="nav-btn" data-view="ofertas">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span>Ofertes</span>
             </button>
             <button class="nav-btn" data-view="mas">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -460,6 +529,27 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
+
+        // LOGOS DATA - Rutas a archivos PNG
+        const logosMap = {
+            "Condis": "logos/condis.png",
+            "Cal Ricard": "logos/cal-ricard.png",
+            "Bonprix super-market": "logos/bonprix.png",
+            "Bonpreu": "logos/bonpreu.png",
+            "Farmacia la mola": "logos/farmacia-lamola.png",
+            "Farmacia Matadepera": "logos/farmacia-matadepera.png",
+            "Carnicería Planells": "logos/planells.png",
+            "TeleKebab Matadepera": "logos/telekebab.png",
+            "Torrents Pescadería": "logos/torrents.png",
+            "Cal Trapet": "logos/caltrapet.png",
+            "Croquis": "logos/croquis.png",
+        };
+
+        // Obtener logo de un comercio
+        function getLogoUrl(nombre) {
+            return logosMap[nombre] || null;
+        }
+
         const comercios = [
             {
                 id: 1,
@@ -612,19 +702,19 @@
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-            if (vista === 'map') {
-                document.getElementById('vistaMap').classList.add('active');
-                document.querySelector('[data-view="map"]').classList.add('active');
-                if (!mapaInstance) initMapa();
-                setTimeout(() => mapaInstance.invalidateSize(), 100);
-            } else if (vista === 'lista') {
+            if (vista === 'lista') {
                 document.getElementById('vistaLista').classList.add('active');
                 document.querySelector('[data-view="lista"]').classList.add('active');
+                if (!mapaInstance) initMapa();
+                setTimeout(() => mapaInstance.invalidateSize(), 100);
                 renderLista();
             } else if (vista === 'favoritos') {
                 document.getElementById('vistaFavoritos').classList.add('active');
                 document.querySelector('[data-view="favoritos"]').classList.add('active');
                 renderFavoritos();
+            } else if (vista === 'ofertas') {
+                document.getElementById('vistaOfertas').classList.add('active');
+                document.querySelector('[data-view="ofertas"]').classList.add('active');
             } else if (vista === 'mas') {
                 document.getElementById('vistaMas').classList.add('active');
                 document.querySelector('[data-view="mas"]').classList.add('active');
@@ -690,10 +780,11 @@
         // MOSTRAR DETALLE
         function mostrarDetalle(id) {
             const comercio = comercios.find(c => c.id === id);
+            const logoUrl = getLogoUrl(comercio.nombre);
             
             const html = `
                 <div style="text-align: center; margin-bottom: 24px;">
-                    <div class="detalle-icon" style="margin: 0 auto; margin-bottom: 16px;">${comercio.icono}</div>
+                    ${logoUrl ? `<img src="${logoUrl}" style="max-width: 100%; height: auto; max-height: 180px; margin-bottom: 16px; border-radius: 8px; object-fit: contain;" alt="${comercio.nombre}">` : `<div class="detalle-icon" style="margin: 0 auto; margin-bottom: 16px;">${comercio.icono}</div>`}
                     <div class="detalle-nombre">${comercio.nombre}</div>
                     <div class="detalle-tipo">${comercio.tipo}</div>
                 </div>
@@ -748,12 +839,26 @@
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const view = btn.dataset.view;
-                if (view === 'map') mostrarVista('map');
-                else if (view === 'lista') mostrarVista('lista');
+                if (view === 'lista') mostrarVista('lista');
                 else if (view === 'favoritos') mostrarVista('favoritos');
+                else if (view === 'ofertas') mostrarVista('ofertas');
                 else if (view === 'mas') mostrarVista('mas');
             });
         });
+
+        // CAMBIAR IDIOMA
+        function cambiarIdioma(idioma) {
+            document.getElementById('btnCatalan').classList.remove('active');
+            document.getElementById('btnCastell').classList.remove('active');
+            
+            if (idioma === 'ca') {
+                document.getElementById('btnCatalan').classList.add('active');
+                console.log('Idioma cambiado a Català');
+            } else if (idioma === 'es') {
+                document.getElementById('btnCastell').classList.add('active');
+                console.log('Idioma cambiado a Castellano');
+            }
+        }
 
         // FILTROS
         document.querySelectorAll('.filtro-btn').forEach(btn => {
