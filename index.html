@@ -136,6 +136,7 @@
             gap: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            align-items: center;
         }
 
         .comercio-card:active {
@@ -188,6 +189,7 @@
             align-items: center;
             justify-content: center;
             color: #ddd;
+            flex-shrink: 0;
         }
 
         .fav-btn.favorited {
@@ -532,18 +534,19 @@
 
         // LOGOS DATA - Rutas a archivos PNG
         const logosMap = {
-    "Condis": "condis.png",
-    "Cal Ricard": "cal ricard.png",
-    "Bonprix super-market": "bonprix.png",
-    "Bonpreu": "bonpreu.png",
-    "Farmacia la mola": "farmacia-lamola.png",
-    "Farmacia Matadepera": "farmacia-matadepera.png",
-    "Carnicería Planells": "planell.png",
-    "TeleKebab Matadepera": "telekebab.png",
-    "Torrents Pescadería": "torrents.png",
-    "Cal Trapet": "cal-trapet.png",
-    "Croquis": "croquis.png",
-};
+            "Condis": "condis.png",
+            "Cal Ricard": "cal ricardo.png",
+            "Bonprix super-market": "bonprix.png",
+            "Bonpreu": "bonpreu.png",
+            "Farmacia la mola": "farmacia-lamola.png",
+            "Farmacia Matadepera": "farmacia-matadepera.png",
+            "Carnicería Planells": "planell.png",
+            "TeleKebab Matadepera": "telekebab.png",
+            "Torrents Pescadería": "torrents.png",
+            "Cal Trapet": "cal-trapet.png",
+            "Croquis": "croquis.png",
+        };
+
         // Obtener logo de un comercio
         function getLogoUrl(nombre) {
             return logosMap[nombre] || null;
@@ -726,20 +729,25 @@
                 ? comercios.filter(c => c.tipo === filtroActual)
                 : comercios;
 
-            const html = filtrados.map(c => `
-                <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
-                    <div class="comercio-icon">${c.icono}</div>
-                    <div class="comercio-info">
-                        <div class="comercio-nombre">${c.nombre}</div>
-                        <div class="comercio-tipo">${c.tipo}</div>
-                        <div class="comercio-horario">🕐 ${c.horario}</div>
+            const html = filtrados.map(c => {
+                const logoUrl = getLogoUrl(c.nombre);
+                return `
+                    <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
+                        ${logoUrl 
+                            ? `<img src="${logoUrl}" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; flex-shrink: 0;" alt="${c.nombre}">` 
+                            : `<div class="comercio-icon">${c.icono}</div>`}
+                        <div class="comercio-info">
+                            <div class="comercio-nombre">${c.nombre}</div>
+                            <div class="comercio-tipo">${c.tipo}</div>
+                            <div class="comercio-horario">🕐 ${c.horario}</div>
+                        </div>
+                        <button class="fav-btn ${favoritos.includes(c.id) ? 'favorited' : ''}" 
+                            onclick="event.stopPropagation(); toggleFavorito(${c.id})">
+                            ${favoritos.includes(c.id) ? '❤️' : '🤍'}
+                        </button>
                     </div>
-                    <button class="fav-btn ${favoritos.includes(c.id) ? 'favorited' : ''}" 
-                        onclick="event.stopPropagation(); toggleFavorito(${c.id})">
-                        ${favoritos.includes(c.id) ? '❤️' : '🤍'}
-                    </button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             document.getElementById('listado').innerHTML = html || '<div style="padding: 20px; text-align: center; color: #999;">No hay comercios</div>';
         }
@@ -758,20 +766,25 @@
                 return;
             }
 
-            const html = favComercio.map(c => `
-                <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
-                    <div class="comercio-icon">${c.icono}</div>
-                    <div class="comercio-info">
-                        <div class="comercio-nombre">${c.nombre}</div>
-                        <div class="comercio-tipo">${c.tipo}</div>
-                        <div class="comercio-horario">🕐 ${c.horario}</div>
+            const html = favComercio.map(c => {
+                const logoUrl = getLogoUrl(c.nombre);
+                return `
+                    <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
+                        ${logoUrl 
+                            ? `<img src="${logoUrl}" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; flex-shrink: 0;" alt="${c.nombre}">` 
+                            : `<div class="comercio-icon">${c.icono}</div>`}
+                        <div class="comercio-info">
+                            <div class="comercio-nombre">${c.nombre}</div>
+                            <div class="comercio-tipo">${c.tipo}</div>
+                            <div class="comercio-horario">🕐 ${c.horario}</div>
+                        </div>
+                        <button class="fav-btn favorited" 
+                            onclick="event.stopPropagation(); toggleFavorito(${c.id})">
+                            ❤️
+                        </button>
                     </div>
-                    <button class="fav-btn favorited" 
-                        onclick="event.stopPropagation(); toggleFavorito(${c.id})">
-                        ❤️
-                    </button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             document.getElementById('favoritosList').innerHTML = html;
         }
@@ -877,20 +890,25 @@
                 (!filtroActual || c.tipo === filtroActual)
             );
 
-            const html = filtrados.map(c => `
-                <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
-                    <div class="comercio-icon">${c.icono}</div>
-                    <div class="comercio-info">
-                        <div class="comercio-nombre">${c.nombre}</div>
-                        <div class="comercio-tipo">${c.tipo}</div>
-                        <div class="comercio-horario">🕐 ${c.horario}</div>
+            const html = filtrados.map(c => {
+                const logoUrl = getLogoUrl(c.nombre);
+                return `
+                    <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
+                        ${logoUrl 
+                            ? `<img src="${logoUrl}" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; flex-shrink: 0;" alt="${c.nombre}">` 
+                            : `<div class="comercio-icon">${c.icono}</div>`}
+                        <div class="comercio-info">
+                            <div class="comercio-nombre">${c.nombre}</div>
+                            <div class="comercio-tipo">${c.tipo}</div>
+                            <div class="comercio-horario">🕐 ${c.horario}</div>
+                        </div>
+                        <button class="fav-btn ${favoritos.includes(c.id) ? 'favorited' : ''}" 
+                            onclick="event.stopPropagation(); toggleFavorito(${c.id})">
+                            ${favoritos.includes(c.id) ? '❤️' : '🤍'}
+                        </button>
                     </div>
-                    <button class="fav-btn ${favoritos.includes(c.id) ? 'favorited' : ''}" 
-                        onclick="event.stopPropagation(); toggleFavorito(${c.id})">
-                        ${favoritos.includes(c.id) ? '❤️' : '🤍'}
-                    </button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             document.getElementById('listado').innerHTML = html;
         });
