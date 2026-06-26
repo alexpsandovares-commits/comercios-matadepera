@@ -532,8 +532,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
 
-        // LOGOS DATA - Rutas en carpeta files/
-        const logosMap = {
+        // LOGOS 48x48 para LISTA - en carpeta files/
+        const logosMap48 = {
             "Condis": "files/condis_48x48.png",
             "Cal Ricard": "files/cal_ricard_48x48.png",
             "Bonprix super-market": "files/bonprix_48x48.png",
@@ -547,9 +547,29 @@
             "Croquis": "files/croquis_48x48.png",
         };
 
-        // Obtener logo de un comercio
-        function getLogoUrl(nombre) {
-            return logosMap[nombre] || null;
+        // LOGOS GRANDES para DETALLE - en raíz
+        const logosMapGrandes = {
+            "Condis": "condis.png",
+            "Cal Ricard": "cal ricardo.png",
+            "Bonprix super-market": "bonprix.png",
+            "Bonpreu": "bonpreu.png",
+            "Farmacia la mola": "farmacia-lamola.png",
+            "Farmacia Matadepera": "farmacia-matadepera.png",
+            "Carnicería Planells": "planell.png",
+            "TeleKebab Matadepera": "telekebab.png",
+            "Torrents Pescadería": "torrents.png",
+            "Cal Trapet": "cal-trapet.png",
+            "Croquis": "croquis.png",
+        };
+
+        // Obtener logo pequeño (lista)
+        function getLogo48(nombre) {
+            return logosMap48[nombre] || null;
+        }
+
+        // Obtener logo grande (detalle)
+        function getLogoGrande(nombre) {
+            return logosMapGrandes[nombre] || null;
         }
 
         const comercios = [
@@ -730,7 +750,7 @@
                 : comercios;
 
             const html = filtrados.map(c => {
-                const logoUrl = getLogoUrl(c.nombre);
+                const logoUrl = getLogo48(c.nombre);
                 return `
                     <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
                         ${logoUrl 
@@ -767,7 +787,7 @@
             }
 
             const html = favComercio.map(c => {
-                const logoUrl = getLogoUrl(c.nombre);
+                const logoUrl = getLogo48(c.nombre);
                 return `
                     <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
                         ${logoUrl 
@@ -792,7 +812,7 @@
         // MOSTRAR DETALLE
         function mostrarDetalle(id) {
             const comercio = comercios.find(c => c.id === id);
-            const logoUrl = getLogoUrl(comercio.nombre);
+            const logoUrl = getLogoGrande(comercio.nombre);
             
             const html = `
                 <div style="text-align: center; margin-bottom: 24px;">
@@ -891,7 +911,7 @@
             );
 
             const html = filtrados.map(c => {
-                const logoUrl = getLogoUrl(c.nombre);
+                const logoUrl = getLogo48(c.nombre);
                 return `
                     <div class="comercio-card" onclick="mostrarDetalle(${c.id})">
                         ${logoUrl 
