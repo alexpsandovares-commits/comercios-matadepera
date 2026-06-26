@@ -933,8 +933,11 @@
             document.getElementById('listado').innerHTML = html;
         });
 
-        // INICIALIZAR
-        initMapa();
+       // INICIALIZAR CUANDO EL DOM ESTÉ LISTO
+        document.addEventListener('DOMContentLoaded', function() {
+            initMapa();
+            renderLista();
+        });
     </script>
 </body>
 </html>
